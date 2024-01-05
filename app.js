@@ -8,6 +8,7 @@ var logger = require('morgan');
 
 var authRouter = require('./routes/auth');
 var notesRouter = require('./routes/notes');
+var searchRouter = require('./routes/search');
 const jwt = require("jsonwebtoken");
 require("./config/database").initDataBase();
 
@@ -42,6 +43,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/api/notes', notesRouter);
+app.use('/api/', searchRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

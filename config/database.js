@@ -51,6 +51,24 @@ const getAllNotesForUser = async (user_id) => {
     }
 };
 
+const searchNotesByKeyword= async (user_id, keyword) => {
+    try {
+        const result = await db.collection('users').findOne({_id: new ObjectId(user_id)}, {
+            created_notes: 1,
+            shared_with_notes: 1
+        });
+        const notes = await db.collection('notes').find({$text : {$search : keyword}, _id: {$in: [...result.created_notes, ...result.shared_with_notes]}}, {
+            noteContent: 1,
+            _id: 1
+        }).toArray();
+        console.log('Note found:', notes);
+        return notes;
+    } catch (error) {
+        console.error('Error creating document:', error.message);
+        throw error;
+    }
+};
+
 const getNoteByIdForUser = async (user_id, note_id) => {
     try {
         const noteUid = new ObjectId(note_id);
@@ -211,7 +229,7 @@ const initDataBase = async () => {
         await db.createCollection('notes');
         await db.createCollection('users');
 
-        await db.collection('notes').createIndex({content: 'text'});
+        await db.collection('notes').createIndex({noteContent: 'text'});
     } catch (e) {
         console.log("init database : ", e);
     }
@@ -231,5 +249,6 @@ module.exports = {
     getNoteByIdForUser,
     updateNoteByIdForUser,
     deleteNoteByIdForUser,
-    shareNoteWithUser
+    shareNoteWithUser,
+    searchNotesByKeyword
 };

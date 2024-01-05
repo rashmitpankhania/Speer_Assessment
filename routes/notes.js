@@ -26,7 +26,6 @@ router.get('/', async function (req, res, next) {
     }
 });
 
-
 /* get note by id */
 router.get('/:id', async function (req, res, next) {
     try {
