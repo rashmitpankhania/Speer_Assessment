@@ -1,6 +1,6 @@
 require("dotenv").config();
 var createError = require('http-errors');
-require("./config/database").connect();
+
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
@@ -9,7 +9,7 @@ var logger = require('morgan');
 var authRouter = require('./routes/auth');
 var notesRouter = require('./routes/notes');
 const jwt = require("jsonwebtoken");
-const {config} = require("dotenv");
+require("./config/database").initDataBase();
 
 var app = express();
 
