@@ -1,7 +1,7 @@
 var express = require('express');
 const {
     findDocuments, createDocument, updateDocument, addNoteToUser, createNoteForUser, getNotesForUser,
-    getNoteByIdForUser, updateNoteByIdForUser, deleteNoteByIdForUser
+    getNoteByIdForUser, updateNoteByIdForUser, deleteNoteByIdForUser, shareNoteWithUser
 } = require("../config/database");
 var router = express.Router();
 
@@ -58,6 +58,18 @@ router.delete('/:id', async function (req, res, next) {
         const notes = await deleteNoteByIdForUser(req.user.user_id, req.params.id);
         if (notes)
             return res.status(200).send(notes);
+        return res.status(404).send('note not found or user is not authorised')
+    } catch (e) {
+        console.log(e);
+    }
+});
+
+// share note with user
+router.post('/:note_id/share/:user_id', async function (req, res, next) {
+    try {
+        const shared = await shareNoteWithUser(req.user.user_id, req.params.user_id, req.params.note_id);
+        if (shared)
+            return res.status(200).send("shared");
         return res.status(404).send('note not found or user is not authorised')
     } catch (e) {
         console.log(e);
